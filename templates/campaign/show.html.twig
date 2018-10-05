@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Campaign{% endblock %}
+
+{% block body %}
+ <div class="parallax-container valign-wrapper">
+        <div class="section no-pad-bot">
+            <div class="container">
+                <h1 class="header center white-text light">{{ campaign.title }}</h1>
+                <div class="row center">
+                    <h5 class="header col s12 light">- Organisée par : {{ campaign.name }} -</h5>
+                </div>
+            </div>
+        </div>
+        <div class="parallax"><img src="/assets/images/8.jpg" alt="Titre de la campagne"></div>
+    </div>
+
+    <!-- Show progress -->
+    <section class="progress-section">
+        <div class="progress">
+            <div class="determinate" style="width: {{ objectif }}"><span>{{ objectif }}% de l'objectif</span></div>
+        </div>
+    </section>
+    <div class="container participe">
+        <div class="section">
+            <!-- Participation section -->
+            <div class="row">
+                <div class="card col s12 m12 l8 offset-l2">
+                    <div class="card-content">
+                        <form action="{{ path('campaign_pay', {'id': campaign.id}) }}" method="get">
+                            <div class="input-field col s12 l6">
+                                <input id="amount" type="number" class="validate" name="amount_participant" required>
+                                <label for="amount">Votre participation</label>
+                            </div>
+                            <button type="submit" class="btn-large waves-effect waves-light pink lighten-1 col s12 l6">Participer</button>
+                        </form>      
+                                         
+                        <div class="clearfix"></div>
+                    </div>   
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 center">
+                    <h4>A propos de la campagne</h4>
+                </div>
+            </div>
+            <!--   Icon Section   -->
+            <div class="row">
+                <div class="col s12 m6 l3 offset-l3">
+                    <div class="icon-block center">
+                        <div class="btn-large btn-floating white"><i class="material-icons teal-text">person</i></div>
+                        <h3 class="center">{{ total_participant }}</h3>
+                        <p class="light">Participants</p>
+                    </div>
+                </div>
+
+                <div class="col s12 m6 l3">
+                    <div class="icon-block center">
+                        <div class="btn-large btn-floating white"><i class="material-icons teal-text">redeem</i></div>
+                        <h3 class="center">{{ total_amount2 }}</h3>
+                        <p class="light">euros récoltés</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Form section -->
+            <div class="row">
+                <form>
+                    <div class="input-field col s12">
+                        <label for="description">Description</label>
+                        <textarea id="description" class="materialize-textarea" readonly="readonly">{{ campaign.content }}</textarea>
+                    </div>
+                    <div class="input-field col s12 l6">
+                        <label for="goal">Objectif</label>
+                        <input id="goal" type="text" class="form-control" value="{{ campaign.goal }}€" readonly="readonly">
+                    </div>
+                    <div class="col s12 l6 offset-l3" style="margin-top: 20px;">
+                        <a href="{{ path('campaign_edit', {'id': campaign.id}) }}" class="btn btn-large waves-effect waves-light col s12">
+                            Modifiez la campagne
+                            <i class="material-icons right">edit</i>
+                        </a>
+                    </div>
+                </form>
+            </div>
+            <!-- List -->
+            <div class="row">
+                <div class="col s12 center">
+                    <h4>Liste des participants</h4>
+                </div>
+                <div class="col s12">
+                    
+                        <table class="highlight responsive-table">
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Email</th>
+                                    <th>Participation</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for participant in participantsWithParticipations %}
+                                <tr>
+                                    <td>
+                                        {{ participant.name }}
+                                    </td>
+
+                                    <td>
+                                        {{ participant.email }}
+                                    </td>
+                                    <td>
+                                        {{ (participant.amount) / 100 }}&euro;
+                                    </td>
+                                </tr>
+                            
+                    {% else %}
+                        <tr>
+                       <td rowpan="3">Pas de participants 😭</td>
+                       </tr>
+                    {% endfor %}
+                    </tbody>
+                        </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="parallax-container valign-wrapper">
+        <div class="section no-pad-bot">
+            <div class="container">
+                <div class="row center">
+                    <h4 class="header col s12 light">Une campagne pensée pour vous<br>et pour toutes les occasions</h4>
+                </div>
+            </div>
+        </div>
+        <div class="parallax"><img src="/assets/images/10.jpg" alt="Une campagne pensée pour vous"></div>
+    </div>
+        
+{% endblock %}

@@ -1,0 +1,208 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pay{% endblock %}
+
+{% block body %}
+ <div class="parallax-container valign-wrapper">
+        <div class="section no-pad-bot">
+            <div class="container">
+                <h1 class="header center white-text light">{{ campaign.title }}</h1>
+                <div class="row center">
+                    <h5 class="header col s12 light">- Organisée par : Nom de l'auteur -</h5>
+                </div>
+            </div>
+        </div>
+        <div class="parallax"><img src="/assets/images/8.jpg" alt="Titre de la campagne"></div>
+    </div>
+ <div class="container">
+        <div class="section">
+            <div class="row">
+                <div class="col s12 center">
+                    <h4>Participez en quelques secondes</h4>
+                </div>
+
+                <div class="col s12 center">
+                    {% for message in app.flashes('error') %}
+                        <div class="card">
+                            <div class="card-content">
+                                <h5 style="color:red;">{{ message }}</h5>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+            <!--   Form Section   -->
+            <div class="card">
+                <div class="card-content">
+                    <div class="row">
+                
+                    <form action="{{ path("payment_new") }}" method="post" id="payment-form">
+                        <input type="hidden" name="campaign_id" value="{{ campaign.id }}">
+
+                        <h5 class="center">Votre identité</h5>
+
+                            <div class="input-field col s12 l6">
+                                <input id="name" name="name" type="text" class="validate" required>
+                                <label for="name">Votre Nom</label>
+                            </div>
+
+                            <div class="input-field col s12 l6">
+                                <input id="email" type="email" class="validate" name="email">
+                                <label for="email" required>Votre Email</label>
+                            </div>
+                            	
+                            <div class="input-field col s12 l6">
+                                <input id="amount" type="number" value="{{ amount_participant|default(0) }}" class="validate" name="amount" required>
+                                <label for="amount">Votre participation</label>
+                            </div>
+                            <div class="input-field col s12 l6">
+                                <input id="amount" type="number" value="{{ amount_participant|default(0) }}" class="validate" name="amount" required>
+                                <label for="amount">Votre depense</label>
+                            </div>
+                            <div class="clearfix"></div>
+                            <p>
+                                <label>
+                                    <input type="checkbox" />
+                                    <span>Masquer mon identité auprès des autres participants</span>
+                                </label>
+                            </p>
+                            <p>
+                                <label>
+                                    <input type="checkbox" />
+                                    <span>Masquer le montant de ma participation auprès des autres participants</span>
+                                </label>
+                            </p>
+                            <div class="clearfix"></div>
+                            
+                            <div class="input-field col s12 l6">
+                                <a href="#!" class="btn btn-large waves-effect waves-light grey col s12">Annuler</a>
+                            </div>
+                            <div class="input-field col s12 l6">
+                                <button class="btn btn-large waves-effect waves-light pink lighten-1 col s12" type="submit">
+                                    Participer
+                                    <i class="material-icons right">euro_symbol</i>
+                                </button>
+                            </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <div class="row">
+                <div class="col s12 center">
+                    <h4>Comment ça marche ?</h4>
+                </div>
+            </div>
+            <!--   Icon Section   -->
+            <div class="row">
+                <div class="col s12 m4">
+                    <div class="icon-block center">
+                        <div class="btn-large btn-floating white"><i class="material-icons teal-text">create</i></div>
+                        <h5 class="center">Créez</h5>
+                        <p class="light">et personnalisez votre campagne commune en 30 secondes !</p>
+                    </div>
+                </div>
+
+                <div class="col s12 m4">
+                    <div class="icon-block center">
+                        <div class="btn-large btn-floating white"><i class="material-icons teal-text">wc</i></div>
+                        <h5 class="center">Invitez</h5>
+                        <p class="light">vos amis en utilisant les réseaux sociaux, mail, etc.</p>
+                    </div>
+                </div>
+
+                <div class="col s12 m4">
+                    <div class="icon-block center">
+                        <div class="btn-large btn-floating white"><i class="material-icons teal-text">shopping_cart</i></div>
+                        <h5 class="center">Collectez</h5>
+                        <p class="light">et utilisez l'argent comme bon vous semble avec vos amis.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="parallax-container valign-wrapper">
+        <div class="section no-pad-bot">
+            <div class="container">
+                <div class="row center">
+                    <h4 class="header col s12 light">Une campagne pensée pour vous<br>et pour toutes les occasions</h4>
+                </div>
+            </div>
+        </div>
+        <div class="parallax"><img src="/assets/images/10.jpg" alt="Une campagne pensée pour vous"></div>
+    </div>
+
+
+    <!-- <a href="{{ path('campaign_edit', {'id': campaign.id}) }}">edit</a> -->
+
+    {# include('campaign/_delete_form.html.twig') #}
+{% endblock %}
+
+{% block javascripts %}
+<script>
+var stripe = Stripe('pk_test_kJIdBYZTvDOIr3igFpuvQzjJ');
+var elements = stripe.elements();
+
+// Custom styling can be passed to options when creating an Element.
+var style = {
+  base: {
+    // Add your base input styles here. For example:
+    fontSize: '16px',
+    color: "#32325d",
+  }
+};
+
+// Create an instance of the card Element.
+var card = elements.create('card', {style: style});
+
+// Add an instance of the card Element into the `card-element` <div>.
+card.mount('#card-element');
+
+card.addEventListener('change', function(event) {
+  var displayError = document.getElementById('card-errors');
+  if (event.error) {
+    displayError.textContent = event.error.message;
+  } else {
+    displayError.textContent = '';
+  }
+});
+
+// Create a token or display an error when the form is submitted.
+var form = document.getElementById('payment-form');
+form.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  stripe.createToken(card).then(function(result) {
+    if (result.error) {
+      // Inform the customer that there was an error.
+      var errorElement = document.getElementById('card-errors');
+      errorElement.textContent = result.error.message;
+    } else {
+      // Send the token to your server.
+      stripeTokenHandler(result.token);
+    }
+  });
+});
+
+function stripeTokenHandler(token) {
+  // Insert the token ID into the form so it gets submitted to the server
+  var form = document.getElementById('payment-form');
+  var hiddenInput = document.createElement('input');
+  hiddenInput.setAttribute('type', 'hidden');
+  hiddenInput.setAttribute('name', 'stripeToken');
+  hiddenInput.setAttribute('value', token.id);
+  form.appendChild(hiddenInput);
+
+  // Submit the form
+  form.submit();
+}
+</script>
+{% endblock %}
